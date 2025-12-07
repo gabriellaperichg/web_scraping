@@ -10,6 +10,29 @@ class AmazonSpider(scrapy.Spider):
         products = response.css('div.puisg-col-inner')
 
         for product in products:
+            name = product.css('h2.a-size-medium span::text').get()
+
+            if not name:
+                continue
+
+            price_text = product.css('span.a-offscreen::text').get()
+            price = None
+
+            if price_text:
+                price_text = price_text.replace('\xa0', '').replace('R$', '').strip()
+                price = float(price_text.replace(',', '.'))
+
+            rate_text = product.css('span.a-size-small.a-color-base::text').get()
+            rate = None
+
+            if rate_text:
+                rate_text = rate_text.replace(',', '.')
+                rate = float(rate_text)
+
             yield {
-                'author': product.xpath('.//span[contains(text(), "por")]/following-sibling::span[1]/text()').get()
+                'author': product.xpath('.//span[contains(text(), "por")]/following-sibling::span[1]/text()').get(),
+                'name': name.strip(),
+                'language': product.xpath('.//span[contains(text(), "Edição")]/text()').get(),
+                'rate': rate,
+                'price': price
             }
