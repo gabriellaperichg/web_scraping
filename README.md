@@ -12,3 +12,5 @@ O Spider faz:
 - Request (acessar o site);
 - Parser (de/para);
 - Next_page (troca de páginas)
+
+`$ scrapy shell`
